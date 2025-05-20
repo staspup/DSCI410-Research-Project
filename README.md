@@ -4,8 +4,8 @@ Class based research project studying CAHOOTS in Eugene,OR.
 
 ## 1. Research Questions
 
-- **RQ8**: What total proportion of calls are handled by each agency (CAHOOTS vs. Police)?
-- **RQ10**: What proportion of calls are diverted from police to CAHOOTS response? How has that proportion changed over time?
+- **RQ**: What total proportion of calls are handled by each agency (CAHOOTS vs. Police)?
+- **RQ**: What proportion of calls are diverted from police to CAHOOTS response? How has that proportion changed over time?
 
 These questions aim to evaluate how CAHOOTS has affected emergency response patterns in Eugene, particularly after its January 2017 expansion and its April 2024 service halt.
 
