@@ -2,18 +2,18 @@
 
 
 # CAHOOTS Dispatch Analysis  
-*DSCI 410 — Applied Data Science for Social Justice*  
+*DSCI 410 - Applied Data Science for Social Justice*  
 Author: **Stas Pupkov** • University of Oregon • June 2025  
 
 ---
 
 ## Overview  
 
-This project evaluates how Eugene’s mobile-crisis program **CAHOOTS** (Crisis Assistance Helping Out On The Streets) has altered 911 call-handling patterns—especially after a major capacity expansion on **1 Jan 2017** (second van + 03:00–10:00 coverage).  
+This project evaluates how Eugene’s mobile-crisis program **CAHOOTS** (Crisis Assistance Helping Out On The Streets) has altered 911 call-handling patterns-especially after a major capacity expansion on **1 Jan 2017** (second van + 03:00–10:00 coverage).  
 We analyse eleven years of Computer-Aided Dispatch (CAD) records (2014 – 2025) to answer:
 
 1. **RQ-1:** What proportion of total 911 calls does each agency handle (CAHOOTS vs. Police), and how has that share changed over time?  
-2. **RQ-2:** Within the early-morning window (03:00 – 10:00)—directly affected by the 2017 expansion—how have diversion rates from police to CAHOOTS evolved?
+2. **RQ-2:** Within the early-morning window (03:00 – 10:00)-directly affected by the 2017 expansion-how have diversion rates from police to CAHOOTS evolved?
 
 ---
 
@@ -22,7 +22,7 @@ We analyse eleven years of Computer-Aided Dispatch (CAD) records (2014 – 2025)
 | Source | Coverage | Key Fields | Notes |
 |--------|----------|------------|-------|
 | City of Eugene Police Department (public-records request) | 1 Jan 2014 – 5 Jun 2025, **1.49 M** calls | `calltime`, `nature`, `primeunit`, `priority`, `zip` | Missing/ambiguous `primeunit` codes (~3 %); free-text `nature` variants |
-| CAHOOTS unit list | Derived (1J77, 3J79, “CAHOOT”, etc.) | — | Used for regex classification into **CAHOOTS / NOT CAHOOTS / unknown** |
+| CAHOOTS unit list | Derived (1J77, 3J79, “CAHOOT”, etc.) | - | Used for regex classification into **CAHOOTS / NOT CAHOOTS / unknown** |
 
 ---
 
