@@ -1,107 +1,107 @@
-# DSCI410-Research-Project
-Class based research project studying CAHOOTS in Eugene,OR. 
-# Project Methods Description
+⸻
 
-## 1. Research Questions
 
-- **RQ**: What total proportion of calls are handled by each agency (CAHOOTS vs. Police)?
-- **RQ**: What proportion of calls are diverted from police to CAHOOTS response? How has that proportion changed over time?
-
-These questions aim to evaluate how CAHOOTS has affected emergency response patterns in Eugene, particularly after its January 2017 expansion and its April 2024 service halt.
+# CAHOOTS Dispatch Analysis  
+*DSCI 410 — Applied Data Science for Social Justice*  
+Author: **Stas Pupkov** • University of Oregon • June 2025  
 
 ---
 
-## 2. Data Description
+## Overview  
 
-### 2.1. Computer-Aided Dispatch (CAD) Data
-- **Source**: Public records request from the City of Eugene Police Department
-- **Observations**: 1.48 million individual 911 call records from 2014 to 2025
-- **Key Variables**: 
-  - `calltime` (timestamp)
-  - `nature` (incident type)
-  - `primeunit` (responder)
-  - `callsource`, `priority`, `zip`
-- **Strengths**: Longitudinal coverage across agencies and call types
-- **Limitations**: Inconsistencies in `nature` field, missing unit IDs in early records, no dispatcher notes
+This project evaluates how Eugene’s mobile-crisis program **CAHOOTS** (Crisis Assistance Helping Out On The Streets) has altered 911 call-handling patterns—especially after a major capacity expansion on **1 Jan 2017** (second van + 03:00–10:00 coverage).  
+We analyse eleven years of Computer-Aided Dispatch (CAD) records (2014 – 2025) to answer:
 
-### 2.2. CAHOOTS Responder Classification
-- **Source**: Derived from known unit IDs (e.g., 1J77, CAHOOT, etc.)
-- **Method**: Regex matching on `primeunit` to classify each call as `CAHOOTS`, `NOT CAHOOTS`, or `unknown`
-- **Limitations**: Some unit types are ambiguous or missing; classification errs on the side of caution
+1. **RQ-1:** What proportion of total 911 calls does each agency handle (CAHOOTS vs. Police), and how has that share changed over time?  
+2. **RQ-2:** Within the early-morning window (03:00 – 10:00)—directly affected by the 2017 expansion—how have diversion rates from police to CAHOOTS evolved?
 
 ---
 
-## 3. Data Cleaning and Processing Steps
+## Data  
 
-- Concatenated 12 CSVs using `glob` into a single DataFrame
-- Parsed `calltime` column as datetime with error handling
-- Created `Unit Type` column from `primeunit` using regex
-- Merged duplicate `nature` labels (e.g., "CHECK WELFARE, CAHOOTS" → "CHECK WELFARE")
-- Created new features: `hour`, `year`, `month_num`
-- Filtered to keep only incident types where CAHOOTS had substantial or shared involvement
-
-**Script Locations**:
-- `data_prep.ipynb` handles all loading and preprocessing
-- README files explain how to run each cell and modify classification logic
+| Source | Coverage | Key Fields | Notes |
+|--------|----------|------------|-------|
+| City of Eugene Police Department (public-records request) | 1 Jan 2014 – 5 Jun 2025, **1.49 M** calls | `calltime`, `nature`, `primeunit`, `priority`, `zip` | Missing/ambiguous `primeunit` codes (~3 %); free-text `nature` variants |
+| CAHOOTS unit list | Derived (1J77, 3J79, “CAHOOT”, etc.) | — | Used for regex classification into **CAHOOTS / NOT CAHOOTS / unknown** |
 
 ---
 
-## 4. Analytical Steps
+## Methodology  
 
-| Step                         | Methodology                            | Input Data       | Output                      |
-|------------------------------|----------------------------------------|------------------|-----------------------------|
-| Classify Responder Type      | Regex on `primeunit`                   | `master_df`      | `Unit Type` column          |
-| Filter CAHOOTS-relevant calls| Threshold-based categorization         | `master_df`      | `core_cahoots_df`           |
-| Merge label duplicates       | `.replace()` with dictionary mapping   | `core_cahoots_df`| Standardized `nature`       |
-| Analyze call timing          | Groupby `hour`, `year`, `Unit Type`    | `core_cahoots_df`| Time-of-day distributions   |
-| Early-morning focus (3–10am) | Filter on `hour` range and group       | `core_cahoots_df`| Yearly CAHOOTS share graphs |
-| Visualization                | `seaborn`, `matplotlib`                | grouped outputs  | Bar/line plots by year/nature|
+### 1 . Data Preparation  
+
+* Concatenate 12 annual CSVs → `master_df`  
+* Parse `calltime` → datetime; derive `date`, `hour`, `year`, `month`  
+* Classify responder via regex on `primeunit`; drop `unknown` rows  
+* Clean `nature` strings (strip “, CAHOOTS”, merge variants)  
+* Flag:  
+  * `post_expansion` (≥ 2017-01-01 05:00)  
+  * `early_window` (03:00 ≤ hour < 10:00)  
+
+### 2 . Analysis Pipeline (`v1.ipynb`)  
+
+| Step | Operation | Output |
+|------|-----------|--------|
+| Daily volumes | Group by `date × Unit Type`; 7-day rolling mean | **Figure 1** |
+| 24-month panels | Loop over consecutive-year pairs | **Figures 2a – 2k** |
+| Early-window focus | Filter `early_window`; daily and paired panels | **Figures 3 + 4a – 4k** |
+| Pre/Post summary | Compare 2014-16 vs 2017-24 means | **Figures 5a-c** |
+| Dominance streaks | ≥ 50.1 % CAHOOTS share (early window) | **Figure 6**, streak metrics |
+| Incident patterns | Core natures bar, share-over-time lines, annual pies & treemaps | **Figures 7 – 11** |
+
+All visuals are regenerated by running the notebook top-to-bottom.
 
 ---
 
-## 5. Scripts and Documentation
+## Key Findings (Visual-Only Summary)  
 
-- Scripts are organized into one notebook
-  -  Currently named `v1.ipynb` , and will be updated as I work on the project
->
-> 
-## 6. Current readme.md
+* CAHOOTS’ share of 03:00–10:00 calls jumps from **≈ 30 %** to **≈ 83 %** immediately after the 2017 expansion and remains > 70 % through 2025.  
+* Police daily volume stays flat post-expansion, indicating true diversion.  
+* Ten sustained “dominance” streaks occur; the longest spans **2 263 days**.  
+* Incident mix is stable (Public Assist, Welfare Check dominate) but CAHOOTS’ share within most categories grows.
 
-# CAHOOTS Dispatch Analysis – Project README
+*(See full report PDF for detailed narrative.)*
 
-This project analyzes dispatch records from Eugene’s 911 system between 2014 and 2025 to understand changes in emergency call patterns, with a focus on CAHOOTS (Crisis Assistance Helping Out On The Streets).
+---
 
-All code and analysis are contained in a single notebook:
+## Repository Structure  
 
-## File
+.
+├─ data/                   # raw CSVs (not included in public repo)
+├─ figures/                # PNG/SVG images generated by the notebook
+├─ v1.ipynb                # end-to-end analysis & visualisation
+├─ report.pdf              # final written report (exported from notebook)
+├─ environment.yml         # reproducible conda environment
+└─ README.md               # this file
 
-- `v1.ipynb`: 
-  - Loads and concatenates yearly CAD CSV files (2014–2025)
-  - Cleans and parses the `calltime` column into usable datetime format
-  - Uses regex classification on `primeunit` to identify CAHOOTS vs. NOT CAHOOTS responders
-  - Merges overlapping `nature` values (e.g. “CHECK WELFARE” and “CHECK WELFARE, CAHOOTS”)
-  - Classifies `nature` types by who primarily responds (CAHOOTS vs NOT CAHOOTS)
-  - Filters down to relevant `nature` types
-  - Produces time-of-day histograms and year-by-month CAHOOTS share plots for the 3–10am window
+---
 
-## How to Run
+## Reproducing the Analysis  
 
-1. Ensure all CAD data files are in the `CAD_data_through_2025/` folder
-2. Open `v1.ipynb` in Jupyter or VS Code
-3. Run each cell top to bottom to execute cleaning, analysis, and plotting
+1. **Clone** the repo  
+2. Create the conda environment:
 
-## Requirements
+   ```bash
+   conda env create -f environment.yml
+   conda activate cahoots-env
 
-- Python 3.9+
-- pandas
-- numpy
-- matplotlib
-- seaborn
-- glob
-- re
+	3.	Place the raw CAD CSVs in data/ (file list in data/README.md).
+	4.	Open v1.ipynb and run all cells.
+Figures and report.pdf will regenerate in figures/.
 
-To install requirements:
+⸻
 
-```bash
-pip install pandas numpy matplotlib seaborn glob re
+Environment
 
+name: cahoots-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - scipy
+  - jupyterlab
+---
